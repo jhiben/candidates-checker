@@ -1,0 +1,27 @@
+{
+    "name": "Candidates Checker",
+    "version": "1.0",
+    "description": "Check for contacted candidates in the current webpage",
+    "manifest_version": 2,
+    "permissions": [
+        "declarativeContent",
+        "activeTab",
+        "webNavigation"
+    ],
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": false
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*.linkedin.com/*"
+            ],
+            "js": [
+                "checker.js"
+            ]
+        }
+    ]
+}
