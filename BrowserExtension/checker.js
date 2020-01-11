@@ -1,18 +1,21 @@
 function check(element) {
-  console.log('chek');
+  if (!element.innerText) return;
 
-  const firstName = 'Sabrine';
-  const lastName = 'Hadji';
-
-  if (
-    element.textContent &&
-    element.textContent.match(new RegExp(firstName), 'i') &&
-    element.textContent.match(new RegExp(lastName, 'i'))
-  ) {
-    element.style.color = 'red';
-    element.innerHTML +=
-      ' <small><i>(contacted on 11/01/2020 by Ginoto)</i></small>';
-  }
+  fetch(
+    'http://localhost:8466/api/check/' + encodeURIComponent(element.innerText),
+  )
+    .then(r => r.json())
+    .then(c => {
+      if (c.isContacted) {
+        element.style.color = 'red';
+        element.innerHTML +=
+          ' <small><i>(contacted on ' +
+          new Date(c.contactedOn).toLocaleDateString() +
+          ' by ' +
+          c.contactedBy +
+          ')</i></small>';
+      }
+    });
 }
 
 const _PROFILE_MATCH = '.pv-top-card-v3--list > li:first-child';
