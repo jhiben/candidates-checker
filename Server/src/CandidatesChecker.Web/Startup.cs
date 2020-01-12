@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace CandidatesChecker.Web
 {
@@ -21,7 +22,7 @@ namespace CandidatesChecker.Web
             services.AddCors();
             services.AddControllers();
 
-            services.AddSingleton<IFileSystemCheck>(_ => new FileSystemCheck(@"C:\Users\jonathan\source\repos\CandidatesChecker\Server\fake_documents"));
+            RegisterFileSystemCheck(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,6 +41,18 @@ namespace CandidatesChecker.Web
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void RegisterFileSystemCheck(IServiceCollection services)
+        {
+            string? folder = null;
+            do
+            {
+                Console.Write("Folder to check: ");
+                folder = Console.ReadLine();
+            } while (string.IsNullOrWhiteSpace(folder));
+
+            services.AddSingleton<IFileSystemCheck>(_ => new FileSystemCheck(folder));
         }
     }
 }
