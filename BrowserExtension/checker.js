@@ -1,13 +1,13 @@
 const _CHECKED_CLASS = 'candidates-checker-extension__checked';
 
 function setContacted(element, c) {
-  const contactedOn = new Date(c.contactedOn);
+  const cod = new Date(c.contactedOn);
+  const contactedOn = `${cod.getDate()}/${cod.getMonth() +
+    1}/${cod.getFullYear()}`;
 
   element.classList.add(_CHECKED_CLASS);
   element.style.color = 'orange';
-  element.innerHTML += ` <small><i>(probably contacted on ${contactedOn.toLocaleDateString()} by ${
-    c.contactedBy
-  })</i></small>`;
+  element.innerHTML += ` <small><i>(probably contacted on ${contactedOn} by ${c.contactedBy})</i></small>`;
 }
 
 function check(element) {
