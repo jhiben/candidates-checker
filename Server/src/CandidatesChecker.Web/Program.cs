@@ -11,7 +11,9 @@ namespace CandidatesChecker.Web
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder
+                        .UseUrls("http://localhost:8466/")
+                        .UseStartup<Startup>();
                 });
     }
 }

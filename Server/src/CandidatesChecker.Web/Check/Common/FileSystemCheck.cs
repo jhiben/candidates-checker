@@ -88,7 +88,13 @@ namespace CandidatesChecker.Web.Check.Common
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _files = Directory.GetFiles(_directory, "*", SearchOption.AllDirectories);
+                try
+                {
+                    _files = Directory.GetFiles(_directory, "*", SearchOption.AllDirectories);
+                }
+                catch (Exception)
+                {
+                }
 
                 await Task.Delay(_cachingDelay, cancellationToken).ConfigureAwait(false);
             }
