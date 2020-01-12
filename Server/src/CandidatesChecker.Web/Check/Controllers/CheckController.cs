@@ -2,7 +2,6 @@
 using CandidatesChecker.Web.Check.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Web;
 
 namespace CandidatesChecker.Web.Check.Controllers
 {
@@ -19,8 +18,6 @@ namespace CandidatesChecker.Web.Check.Controllers
         [HttpGet("{rawName}")]
         public ActionResult<CheckResult> CheckCandidate(string rawName)
         {
-            rawName = HttpUtility.UrlDecode(rawName);
-
             if (!string.IsNullOrWhiteSpace(rawName))
             {
                 if (_fileSystemCheck.DirectoryContainsFileWithName(rawName, out var date, out string author))
