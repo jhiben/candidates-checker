@@ -2,9 +2,6 @@
 using CandidatesChecker.Web.Check.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
 
 namespace CandidatesChecker.Web.Check.Controllers
