@@ -8,6 +8,7 @@
         "activeTab",
         "webNavigation"
     ],
+    "browser_action": {},
     "background": {
         "scripts": [
             "background.js"

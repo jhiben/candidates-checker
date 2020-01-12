@@ -10,14 +10,38 @@ function setContacted(element, c) {
   element.innerHTML += ` <small><i>(probably contacted on ${contactedOn} by ${c.contactedBy})</i></small>`;
 }
 
+let connected = undefined;
+
+function errorFetching(error) {
+  if (connected === false) return;
+
+  connected = false;
+  chrome.runtime.sendMessage({ connectionLost: true });
+
+  return Promise.reject(error);
+}
+
+function successFetching() {
+  if (connected === true) return;
+
+  connected = true;
+  chrome.runtime.sendMessage({ connected: true });
+}
+
 function check(element) {
   if (!element.innerText || element.classList.contains(_CHECKED_CLASS)) return;
 
   fetch(
     'http://localhost:8466/api/check/' + encodeURIComponent(element.innerText),
   )
+    .catch(errorFetching)
     .then(r => r.json())
-    .then(c => c.isContacted && setContacted(element, c));
+    .then(c => {
+      successFetching();
+      if (c.isContacted) {
+        setContacted(element, c);
+      }
+    });
 }
 
 const _PROFILE_MATCH = '.pv-top-card-v3--list > li:first-child';
