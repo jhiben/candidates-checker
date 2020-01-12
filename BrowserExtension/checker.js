@@ -1,6 +1,9 @@
+const _CHECKED_CLASS = 'candidates-checker-extension__checked';
+
 function setContacted(element, c) {
   const contactedOn = new Date(c.contactedOn);
 
+  element.classList.add(_CHECKED_CLASS);
   element.style.color = 'orange';
   element.innerHTML += ` <small><i>(probably contacted on ${contactedOn.toLocaleDateString()} by ${
     c.contactedBy
@@ -8,7 +11,7 @@ function setContacted(element, c) {
 }
 
 function check(element) {
-  if (!element.innerText) return;
+  if (!element.innerText || element.classList.contains(_CHECKED_CLASS)) return;
 
   fetch(
     'http://localhost:8466/api/check/' + encodeURIComponent(element.innerText),
