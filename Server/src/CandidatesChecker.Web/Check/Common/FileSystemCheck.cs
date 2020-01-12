@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +11,8 @@ namespace CandidatesChecker.Web.Check.Common
 {
     public class FileSystemCheck : IFileSystemCheck, IDisposable
     {
+        private const string _unkownAuthor = "unknown";
+
         private const int _cachingDelay = 10_000;
 
         private readonly string _directory;
@@ -44,7 +48,8 @@ namespace CandidatesChecker.Web.Check.Common
                 var file = new FileInfo(fileName);
 
                 creationDate = file.CreationTime;
-                author = "unkown";
+                string fullAuthor = file.GetAccessControl().GetOwner(typeof(NTAccount))?.Value ?? _unkownAuthor;
+                author = Path.GetFileName(fullAuthor);
 
                 return true;
             }

@@ -1,3 +1,12 @@
+function setContacted(element, c) {
+  const contactedOn = new Date(c.contactedOn);
+
+  element.style.color = 'red';
+  element.innerHTML += ` <small><i>(contacted on ${contactedOn.toLocaleDateString()} by ${
+    c.contactedBy
+  })</i></small>`;
+}
+
 function check(element) {
   if (!element.innerText) return;
 
@@ -5,17 +14,7 @@ function check(element) {
     'http://localhost:8466/api/check/' + encodeURIComponent(element.innerText),
   )
     .then(r => r.json())
-    .then(c => {
-      if (c.isContacted) {
-        element.style.color = 'red';
-        element.innerHTML +=
-          ' <small><i>(contacted on ' +
-          new Date(c.contactedOn).toLocaleDateString() +
-          ' by ' +
-          c.contactedBy +
-          ')</i></small>';
-      }
-    });
+    .then(c => c.isContacted && setContacted(element, c));
 }
 
 const _PROFILE_MATCH = '.pv-top-card-v3--list > li:first-child';
@@ -66,7 +65,8 @@ var observer = new MutationObserver(mutations => {
 
 observer.observe(document, { childList: true, subtree: true });
 
-document.querySelectorAll(_PROFILE_MATCH).forEach(check);
-document.querySelectorAll(_SEARCH_RESULT_MATCH).forEach(check);
-document.querySelectorAll(_SEARCH_POPUP_RESULT_MATCH).forEach(check);
-document.querySelectorAll(_SEARCH_RECENT_MATCH).forEach(check);
+document
+  .querySelectorAll(
+    `${_PROFILE_MATCH},${_SEARCH_RESULT_MATCH},${_SEARCH_POPUP_RESULT_MATCH},${_SEARCH_RECENT_MATCH}`,
+  )
+  .forEach(check);
