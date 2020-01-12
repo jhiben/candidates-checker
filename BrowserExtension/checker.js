@@ -1,8 +1,8 @@
 function setContacted(element, c) {
   const contactedOn = new Date(c.contactedOn);
 
-  element.style.color = 'red';
-  element.innerHTML += ` <small><i>(contacted on ${contactedOn.toLocaleDateString()} by ${
+  element.style.color = 'orange';
+  element.innerHTML += ` <small><i>(probably contacted on ${contactedOn.toLocaleDateString()} by ${
     c.contactedBy
   })</i></small>`;
 }
