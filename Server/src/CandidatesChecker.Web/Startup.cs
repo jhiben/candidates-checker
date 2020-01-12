@@ -28,7 +28,7 @@ namespace CandidatesChecker.Web
             services.AddCors();
             services.AddControllers();
 
-            services.AddSingleton<IFileSystemCheck, FileSystemCheck>();
+            services.AddSingleton<IFileSystemCheck>(_ => new FileSystemCheck(@"C:\Users\jonathan\source\repos\CandidatesChecker\Server\fake_documents"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

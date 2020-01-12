@@ -2,11 +2,36 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CandidatesChecker.Web.Check.Common
 {
-    public class FileSystemCheck : IFileSystemCheck
+    public class FileSystemCheck : IFileSystemCheck, IDisposable
     {
+        private const int _cachingDelay = 10_000;
+
+        private readonly string _directory;
+
+        private readonly CancellationTokenSource _filesCachingCancellation;
+
+        private bool _disposed;
+
+        private string[] _files = Array.Empty<string>();
+
+        public FileSystemCheck(string directory)
+        {
+            if (string.IsNullOrWhiteSpace(directory))
+            {
+                throw new ArgumentException("Cannot be empty", nameof(directory));
+            }
+
+            _directory = directory;
+            _filesCachingCancellation = new CancellationTokenSource();
+
+            _ = StartFilesCaching(_filesCachingCancellation.Token);
+        }
+
         public bool DirectoryContainsFileWithName(string name, out DateTime creationDate, out string author)
         {
             creationDate = DateTime.MinValue;
@@ -14,9 +39,7 @@ namespace CandidatesChecker.Web.Check.Common
 
             try
             {
-                string? fileName = Directory
-                    .GetFiles(@"C:\Users\jonathan\source\repos\CandidatesChecker\Server\fake_documents", "*", SearchOption.AllDirectories)
-                    .FirstOrDefault(fn => FileNameContainsName(name, Path.GetFileNameWithoutExtension(fn) ?? string.Empty));
+                string? fileName = Array.Find(_files, fn => FileNameContainsName(name, Path.GetFileNameWithoutExtension(fn) ?? string.Empty));
 
                 var file = new FileInfo(fileName);
 
@@ -31,11 +54,45 @@ namespace CandidatesChecker.Web.Check.Common
             }
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            _filesCachingCancellation.Cancel();
+            _filesCachingCancellation.Dispose();
+
+            _disposed = true;
+        }
+
         private bool FileNameContainsName(string name, string fileName)
         {
             return name
                 .Split(' ', StringSplitOptions.RemoveEmptyEntries)
                 .All(e => Regex.IsMatch(fileName, @$"\b{Regex.Escape(e)}\b", RegexOptions.IgnoreCase));
+        }
+
+        private async Task StartFilesCaching(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                _files = Directory.GetFiles(_directory, "*", SearchOption.AllDirectories);
+
+                await Task.Delay(_cachingDelay, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        ~FileSystemCheck()
+        {
+            Dispose(false);
         }
     }
 }
