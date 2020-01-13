@@ -7,7 +7,7 @@ function setContacted(element, c) {
 
   element.classList.add(_CHECKED_CLASS);
   element.style.color = 'orange';
-  element.innerHTML += ` <small><i>(probably contacted on ${contactedOn} by ${c.contactedBy})</i></small>`;
+  element.title = `Probably contacted on ${contactedOn} by ${c.contactedBy}`;
 }
 
 let connected = undefined;
