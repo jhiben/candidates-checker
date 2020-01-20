@@ -80,7 +80,7 @@ namespace CandidatesChecker.Web.Check.Common
         private bool FileNameContainsName(string name, string fileName)
         {
             return name
-                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
                 .All(e => Regex.IsMatch(fileName, @$"\b{Regex.Escape(e)}\b", RegexOptions.IgnoreCase));
         }
 
