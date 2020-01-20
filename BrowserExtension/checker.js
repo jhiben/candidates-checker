@@ -44,7 +44,7 @@ function check(element) {
     });
 }
 
-const _PROFILE_MATCH = '.pv-top-card-v3--list > li:first-child';
+const _PROFILE_MATCH = '.pv-top-card-v3--list > li.t-24';
 
 function profileMatch(node) {
   return node.matches(_PROFILE_MATCH);
