@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
@@ -42,20 +43,22 @@ namespace CandidatesChecker.Web.Check.Common
 
             try
             {
-                string? fileName = Array.Find(_files, fn => FileNameContainsName(name, Path.GetFileNameWithoutExtension(fn) ?? string.Empty));
+                var file = FindMostRecentMatchingFile(name);
 
-                var file = new FileInfo(fileName);
+                if (file != null)
+                {
+                    string fullAuthor = file.GetAccessControl().GetOwner(typeof(NTAccount))?.Value ?? _unkownAuthor;
+                    creationDate = file.CreationTime;
+                    author = Path.GetFileName(fullAuthor);
 
-                creationDate = file.CreationTime;
-                string fullAuthor = file.GetAccessControl().GetOwner(typeof(NTAccount))?.Value ?? _unkownAuthor;
-                author = Path.GetFileName(fullAuthor);
-
-                return true;
+                    return true;
+                }
             }
             catch (Exception)
             {
-                return false;
             }
+
+            return false;
         }
 
         public void Dispose()
@@ -75,6 +78,15 @@ namespace CandidatesChecker.Web.Check.Common
             _filesCachingCancellation.Dispose();
 
             _disposed = true;
+        }
+
+        private FileInfo? FindMostRecentMatchingFile(string name)
+        {
+            return Array
+                .FindAll(_files, fn => FileNameContainsName(name, Path.GetFileNameWithoutExtension(fn) ?? string.Empty))
+                .Select(fn => new FileInfo(fn))
+                .OrderByDescending(f => f.CreationTime)
+                .FirstOrDefault();
         }
 
         private bool FileNameContainsName(string name, string fileName)
