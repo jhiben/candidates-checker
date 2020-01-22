@@ -1,3 +1,3 @@
-# candidates-checker
+# Candidates Checker
 
 TODO
