@@ -1,69 +1,72 @@
-function check(element) {
-  console.log('chek');
-
-  const firstName = 'Sabrine';
-  const lastName = 'Hadji';
-
-  if (
-    element.textContent &&
-    element.textContent.match(new RegExp(firstName), 'i') &&
-    element.textContent.match(new RegExp(lastName, 'i'))
-  ) {
-    element.style.color = 'red';
-    element.innerHTML +=
-      ' <small><i>(contacted on 11/01/2020 by Ginoto)</i></small>';
+function checker(selector, nameCleaner) {
+  if (!nameCleaner) {
+    nameCleaner = t => t;
   }
-}
 
-const _PROFILE_MATCH = '.pv-top-card-v3--list > li:first-child';
+  const _CHECKED_CLASS = 'candidates-checker-extension__checked';
 
-function profileMatch(node) {
-  return node.matches(_PROFILE_MATCH);
-}
+  function setContacted(element, c) {
+    const cod = new Date(c.contactedOn);
+    const contactedOn = `${cod.getDate()}/${cod.getMonth() +
+      1}/${cod.getFullYear()}`;
 
-const _SEARCH_RESULT_MATCH = '.name.actor-name';
+    element.classList.add(_CHECKED_CLASS);
+    element.style.color = 'orange';
+    element.title = `Probably contacted on ${contactedOn} by ${c.contactedBy}`;
+  }
 
-function searchResultsMatch(node) {
-  return node.matches(_SEARCH_RESULT_MATCH);
-}
+  let connected = undefined;
 
-const _SEARCH_POPUP_RESULT_MATCH =
-  '.basic-typeahead__triggered-content.search-global-typeahead__content.search-box_focus .typeahead-suggestion .search-typeahead-v2__hit-info > span';
+  function errorFetching(error) {
+    if (connected === false) return;
 
-function searchPopupResultMatch(node) {
-  return node.matches(_SEARCH_POPUP_RESULT_MATCH);
-}
+    connected = false;
+    chrome.runtime.sendMessage({ connectionLost: true });
 
-const _SEARCH_RECENT_MATCH =
-  '.search-typeahead-v2__history-list-carousel > li .typeahead-suggestion--carousel-item-text';
+    return Promise.reject(error);
+  }
 
-function searchRecentMatch(node) {
-  return node.matches(_SEARCH_RECENT_MATCH);
-}
+  function successFetching() {
+    if (connected === true) return;
 
-function match(node) {
-  return (
-    profileMatch(node) ||
-    searchResultsMatch(node) ||
-    searchPopupResultMatch(node) ||
-    searchRecentMatch(node)
-  );
-}
+    connected = true;
+    chrome.runtime.sendMessage({ connected: true });
+  }
 
-var observer = new MutationObserver(mutations => {
-  mutations.forEach(mutation => {
-    for (let i = 0; i < mutation.addedNodes.length; i++) {
-      const node = mutation.addedNodes[i];
-      if (node.nodeType === Node.ELEMENT_NODE && match(node)) {
-        check(node);
+  function check(element) {
+    if (!element.innerText || element.classList.contains(_CHECKED_CLASS))
+      return;
+
+    const text = nameCleaner(element.innerText);
+
+    fetch('http://localhost:8466/api/check/' + encodeURIComponent(text))
+      .catch(errorFetching)
+      .then(r => r.json())
+      .then(c => {
+        successFetching();
+        if (c.isContacted) {
+          setContacted(element, c);
+        }
+      });
+  }
+
+  function searchTree(node) {
+    node.querySelectorAll(selector).forEach(check);
+  }
+
+  var observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      for (let i = 0; i < mutation.addedNodes.length; i++) {
+        const node = mutation.addedNodes[i];
+        console.log('checked' + node.nodeType);
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          searchTree(node);
+        }
       }
-    }
+    });
   });
-});
 
-observer.observe(document, { childList: true, subtree: true });
+  observer.observe(document, { childList: true, subtree: true });
 
-document.querySelectorAll(_PROFILE_MATCH).forEach(check);
-document.querySelectorAll(_SEARCH_RESULT_MATCH).forEach(check);
-document.querySelectorAll(_SEARCH_POPUP_RESULT_MATCH).forEach(check);
-document.querySelectorAll(_SEARCH_RECENT_MATCH).forEach(check);
+  searchTree(document);
+}

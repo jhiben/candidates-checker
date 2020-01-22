@@ -8,6 +8,7 @@
         "activeTab",
         "webNavigation"
     ],
+    "browser_action": {},
     "background": {
         "scripts": [
             "background.js"
@@ -17,10 +18,21 @@
     "content_scripts": [
         {
             "matches": [
-                "https://*.linkedin.com/*"
+                "https://*.linkedin.com/*",
+                "https://linkedin.com/*"
             ],
             "js": [
-                "checker.js"
+                "checker.js",
+                "linkedin.js"
+            ]
+        },
+        {
+            "matches": [
+                "https://employeur.monster.lu/*"
+            ],
+            "js": [
+                "checker.js",
+                "monster.js"
             ]
         }
     ]
