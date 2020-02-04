@@ -21,7 +21,7 @@ namespace CandidatesChecker.Web.Check.Common
 
         private bool _disposed;
 
-        private string[] _files = Array.Empty<string>();
+        private CandidateFileData[] _namesInFolder = Array.Empty<CandidateFileData>();
 
         public FileSystemCheck(string directory)
         {
@@ -82,18 +82,20 @@ namespace CandidatesChecker.Web.Check.Common
 
         private FileInfo? FindMostRecentMatchingFile(string name)
         {
+            name = name.RemoveDiacritics();
+
             return Array
-                .FindAll(_files, fn => FileNameContainsName(name, Path.GetFileNameWithoutExtension(fn) ?? string.Empty))
-                .Select(fn => new FileInfo(fn))
+                .FindAll(_namesInFolder, f => StringContainsName(f.CandidateName, name))
+                .Select(f => new FileInfo(f.FileName))
                 .OrderByDescending(f => f.CreationTime)
                 .FirstOrDefault();
         }
 
-        private bool FileNameContainsName(string name, string fileName)
+        private bool StringContainsName(string s, string name)
         {
             return name
                 .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
-                .All(e => Regex.IsMatch(fileName, @$"\b{Regex.Escape(e)}\b", RegexOptions.IgnoreCase));
+                .All(e => Regex.IsMatch(s, @$"\b{Regex.Escape(e)}\b", RegexOptions.IgnoreCase));
         }
 
         private async Task StartFilesCaching(CancellationToken cancellationToken)
@@ -102,7 +104,10 @@ namespace CandidatesChecker.Web.Check.Common
             {
                 try
                 {
-                    _files = Directory.GetFiles(_directory, "*", SearchOption.AllDirectories);
+                    _namesInFolder = Directory
+                        .GetFiles(_directory, "*", SearchOption.AllDirectories)
+                        .Select(f => new CandidateFileData(f))
+                        .ToArray();
                 }
                 catch (Exception)
                 {
@@ -115,6 +120,19 @@ namespace CandidatesChecker.Web.Check.Common
         ~FileSystemCheck()
         {
             Dispose(false);
+        }
+
+        private class CandidateFileData
+        {
+            public string CandidateName { get; }
+
+            public string FileName { get; }
+
+            public CandidateFileData(string fileName)
+            {
+                FileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
+                CandidateName = Path.GetFileNameWithoutExtension(FileName).RemoveDiacritics();
+            }
         }
     }
 }
