@@ -58,7 +58,6 @@ function checker(selector, nameCleaner) {
     mutations.forEach(mutation => {
       for (let i = 0; i < mutation.addedNodes.length; i++) {
         const node = mutation.addedNodes[i];
-        console.log('checked' + node.nodeType);
         if (node.nodeType === Node.ELEMENT_NODE) {
           searchTree(node);
         }
