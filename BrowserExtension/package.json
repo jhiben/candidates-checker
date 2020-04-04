@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/jhiben/candidates-checker/issues"
   },
-  "homepage": "https://github.com/jhiben/candidates-checker#readme"
+  "homepage": "https://github.com/jhiben/candidates-checker#readme",
+  "devDependencies": {
+    "@types/chrome": "0.0.103"
+  }
 }
