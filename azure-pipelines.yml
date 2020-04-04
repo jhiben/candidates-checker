@@ -16,3 +16,4 @@ steps:
     npm ci
     npm run build
   displayName: 'Build'
+  workingDirectory: BrowserExtension
