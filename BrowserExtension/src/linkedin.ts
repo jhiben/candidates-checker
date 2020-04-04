@@ -1,3 +1,5 @@
+import { checker } from './checker';
+
 const _PROFILE_MATCH = [
   '.pv-top-card-v3--list > li.t-24',
   '.pv-top-card--list > li.t-24',

@@ -1,0 +1,31 @@
+{
+  "name": "@candidates-checker/browser-extension",
+  "version": "1.0.0",
+  "description": "",
+  "main": "background.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhiben/candidates-checker.git"
+  },
+  "author": "Jonathan Hiben",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/jhiben/candidates-checker/issues"
+  },
+  "homepage": "https://github.com/jhiben/candidates-checker#readme",
+  "devDependencies": {
+    "@types/chrome": "0.0.103",
+    "copy-webpack-plugin": "^5.1.1",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "prettier": "^2.0.2"
+  }
+}

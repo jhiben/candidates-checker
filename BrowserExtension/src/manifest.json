@@ -5,8 +5,7 @@
     "manifest_version": 2,
     "permissions": [
         "declarativeContent",
-        "activeTab",
-        "webNavigation"
+        "activeTab"
     ],
     "browser_action": {},
     "background": {
@@ -22,7 +21,6 @@
                 "https://linkedin.com/*"
             ],
             "js": [
-                "checker.js",
                 "linkedin.js"
             ]
         },
@@ -31,7 +29,6 @@
                 "https://employeur.monster.lu/*"
             ],
             "js": [
-                "checker.js",
                 "monster.js"
             ]
         }
