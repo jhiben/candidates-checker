@@ -1,5 +1,6 @@
 trigger:
 - develop
+- master
 pr:
 - develop
 
@@ -17,3 +18,16 @@ steps:
     npm run build
   displayName: 'Build'
   workingDirectory: BrowserExtension
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: BrowserExtension/dist
+    includeRootFolder: false
+    archiveFile: '$(Build.ArtifactStagingDirectory)/browser-extension.zip'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/browser-extension.zip'
+    artifactName: browser-extension
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
