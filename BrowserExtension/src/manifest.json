@@ -22,7 +22,6 @@
                 "https://linkedin.com/*"
             ],
             "js": [
-                "checker.js",
                 "linkedin.js"
             ]
         },
@@ -31,7 +30,6 @@
                 "https://employeur.monster.lu/*"
             ],
             "js": [
-                "checker.js",
                 "monster.js"
             ]
         }
