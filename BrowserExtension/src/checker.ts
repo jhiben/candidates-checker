@@ -4,7 +4,7 @@ interface CheckResult {
   contactedBy?: string;
 }
 
-function checker(
+export function checker(
   selector: string,
   nameCleaner: (t: string) => string = t => t
 ) {
