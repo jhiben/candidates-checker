@@ -5,8 +5,7 @@
     "manifest_version": 2,
     "permissions": [
         "declarativeContent",
-        "activeTab",
-        "webNavigation"
+        "activeTab"
     ],
     "browser_action": {},
     "background": {
