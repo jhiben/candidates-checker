@@ -1,0 +1,19 @@
+{
+  "name": "@candidates-checker/browser-extension",
+  "version": "1.0.0",
+  "description": "",
+  "main": "background.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhiben/candidates-checker.git"
+  },
+  "author": "Jonathan Hiben",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/jhiben/candidates-checker/issues"
+  },
+  "homepage": "https://github.com/jhiben/candidates-checker#readme"
+}
