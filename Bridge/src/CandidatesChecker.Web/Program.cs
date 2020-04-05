@@ -15,6 +15,7 @@ namespace CandidatesChecker.Web
                     logging.ClearProviders();
                     logging.SetMinimumLevel(LogLevel.Information);
                     logging.AddFilter("Microsoft", LogLevel.Warning);
+                    logging.AddFilter("Microsoft.Hosting.Lifetime", LogLevel.Information);
                     logging.AddConsole();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
