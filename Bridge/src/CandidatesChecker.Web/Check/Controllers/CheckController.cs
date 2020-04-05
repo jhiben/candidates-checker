@@ -32,6 +32,8 @@ namespace CandidatesChecker.Web.Check.Controllers
 
                     return new CheckResult(date, author);
                 }
+
+                _logger.LogInformation($"'{rawName}' not found.");
             }
 
             return new CheckResult();

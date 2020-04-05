@@ -14,6 +14,7 @@ namespace CandidatesChecker.Web
                 {
                     logging.ClearProviders();
                     logging.SetMinimumLevel(LogLevel.Information);
+                    logging.AddFilter("Microsoft", LogLevel.Warning);
                     logging.AddConsole();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
