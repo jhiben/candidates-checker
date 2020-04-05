@@ -19,6 +19,11 @@ steps:
     packageType: sdk
     version: 3.x
 
+- task: NuGetToolInstaller@1
+  displayName: 'Install NuGet'
+  inputs:
+    versionSpec: 5.x
+
 - script: |
     npm ci
     npm run build
