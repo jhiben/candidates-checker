@@ -13,7 +13,7 @@ namespace CandidatesChecker.Web
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();
-                    logging.SetMinimumLevel(LogLevel.Error);
+                    logging.SetMinimumLevel(LogLevel.Information);
                     logging.AddConsole();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
