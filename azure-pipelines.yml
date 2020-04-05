@@ -25,12 +25,11 @@ steps:
   displayName: 'Build browser extension'
   workingDirectory: BrowserExtension
 
-- task: DotNetCoreCLI@2
-  displayName: 'Restore bridge dependencies'
+- task: NuGetCommand@2
   inputs:
-    command: restore
-    projects: 'CandidatesChecker.sln'
-    workingDirectory: Bridge
+    command: 'restore'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'select'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build bridge'
