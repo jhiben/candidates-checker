@@ -29,7 +29,7 @@ steps:
   displayName: 'Restore bridge dependencies'
   inputs:
     command: restore
-    projects: '**\*.csproj'
+    projects: 'CandidatesChecker.sln'
     workingDirectory: Bridge
 
 - task: DotNetCoreCLI@2
@@ -51,6 +51,7 @@ steps:
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: ArchiveFiles@2
+  displayName: 'Zip bowser extension'
   inputs:
     rootFolderOrFile: BrowserExtension/dist
     includeRootFolder: false
