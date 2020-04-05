@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2AF8A492-0504-409D-A2E1-BDF532AB4DF4}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.ruleset = .ruleset
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F469F0F4-CD55-4BEB-90E8-496D1CC48DFA}"

@@ -30,6 +30,7 @@ namespace CandidatesChecker.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "By convention")]
         public void Configure(IApplicationBuilder app)
         {
             app.UseRouting();
@@ -52,7 +53,7 @@ namespace CandidatesChecker.Web
             string? folder = null;
             if (Environment.IsDevelopment())
             {
-                folder = @"C:\Users\jonathan\source\repos\CandidatesChecker\Bridge\fake_documents";
+                folder = @$"{Environment.ContentRootPath}\..\..\fake_documents";
             }
             else
             {
@@ -60,7 +61,8 @@ namespace CandidatesChecker.Web
                 {
                     Console.Write("Folder to check: ");
                     folder = Console.ReadLine();
-                } while (string.IsNullOrWhiteSpace(folder));
+                }
+                while (string.IsNullOrWhiteSpace(folder));
             }
 
             services.AddSingleton<IFileSystemCheck>(_ => new FileSystemCheck(folder));
