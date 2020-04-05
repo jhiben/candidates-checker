@@ -3,18 +3,22 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 
 namespace CandidatesChecker.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IConfiguration Configuration { get; }
+
+        public IWebHostEnvironment Environment { get; }
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Environment = env;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -26,7 +30,7 @@ namespace CandidatesChecker.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseRouting();
 
@@ -46,11 +50,18 @@ namespace CandidatesChecker.Web
         private void RegisterFileSystemCheck(IServiceCollection services)
         {
             string? folder = null;
-            do
+            if (Environment.IsDevelopment())
             {
-                Console.Write("Folder to check: ");
-                folder = Console.ReadLine();
-            } while (string.IsNullOrWhiteSpace(folder));
+                folder = @"C:\Users\jonathan\source\repos\CandidatesChecker\Bridge\fake_documents";
+            }
+            else
+            {
+                do
+                {
+                    Console.Write("Folder to check: ");
+                    folder = Console.ReadLine();
+                } while (string.IsNullOrWhiteSpace(folder));
+            }
 
             services.AddSingleton<IFileSystemCheck>(_ => new FileSystemCheck(folder));
         }
