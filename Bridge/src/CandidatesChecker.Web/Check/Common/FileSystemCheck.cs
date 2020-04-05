@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
@@ -9,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace CandidatesChecker.Web.Check.Common
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Should never fail")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "RCS1075:Avoid empty catch clause that catches System.Exception.", Justification = "Should never fail")]
     public class FileSystemCheck : IFileSystemCheck, IDisposable
     {
         private const string _unkownAuthor = "unknown";
@@ -80,6 +81,14 @@ namespace CandidatesChecker.Web.Check.Common
             _disposed = true;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1011:Closing square brackets should be spaced correctly", Justification = "Bug in StyleCop")]
+        private static bool StringContainsName(string s, string name)
+        {
+            return name
+                .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
+                .All(e => Regex.IsMatch(s, @$"\b{Regex.Escape(e)}\b", RegexOptions.IgnoreCase));
+        }
+
         private FileInfo? FindMostRecentMatchingFile(string name)
         {
             name = name.RemoveDiacritics();
@@ -89,13 +98,6 @@ namespace CandidatesChecker.Web.Check.Common
                 .Select(f => new FileInfo(f.FileName))
                 .OrderByDescending(f => f.CreationTime)
                 .FirstOrDefault();
-        }
-
-        private bool StringContainsName(string s, string name)
-        {
-            return name
-                .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
-                .All(e => Regex.IsMatch(s, @$"\b{Regex.Escape(e)}\b", RegexOptions.IgnoreCase));
         }
 
         private async Task StartFilesCaching(CancellationToken cancellationToken)
