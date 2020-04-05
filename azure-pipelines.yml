@@ -40,7 +40,7 @@ steps:
   displayName: 'Build bridge'
   inputs:
     command: build
-    projects: 'CandidatesChecker.sln'
+    projects: '**/*.sln'
     arguments: -c Release --no-restore
     workingDirectory: Bridge
 
