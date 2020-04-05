@@ -9,15 +9,46 @@ pool:
 
 steps:
 - task: NodeTool@0
+  displayName: 'Install Node.js'
   inputs:
     versionSpec: '10.x'
-  displayName: 'Install Node.js'
+
+- task: UseDotNet@2
+  displayName: 'Use .NET Core'
+  inputs:
+    packageType: sdk
+    version: 3.x
 
 - script: |
     npm ci
     npm run build
-  displayName: 'Build'
+  displayName: 'Build browser extension'
   workingDirectory: BrowserExtension
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restore bridge dependencies'
+  inputs:
+    command: restore
+    projects: '**\*.csproj'
+    workingDirectory: Bridge
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build bridge'
+  inputs:
+    command: build
+    projects: 'CandidatesChecker.sln'
+    arguments: -c Release --no-restore
+    workingDirectory: Bridge
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish bridge'
+  inputs:
+    command: publish
+    publishWebProjects: true
+    zipAfterPublish: true
+    arguments: -c Release -o $(Build.ArtifactStagingDirectory)/bridge --no-restore
+    workingDirectory: Bridge
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: ArchiveFiles@2
   inputs:
@@ -27,7 +58,15 @@ steps:
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts: browser extension'
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)/browser-extension.zip'
     artifactName: browser-extension
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts: bridge'
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/bridge.zip'
+    artifactName: bridge
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
