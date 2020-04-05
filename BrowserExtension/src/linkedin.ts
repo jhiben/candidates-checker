@@ -12,7 +12,7 @@ const _SEARCH_RESULT_MATCH = [
 ].join(',');
 
 const _SEARCH_POPUP_RESULT_MATCH =
-  '.basic-typeahead__triggered-content.search-global-typeahead__content.search-box_focus .typeahead-suggestion .search-typeahead-v2__hit-info > span';
+  '.basic-typeahead__triggered-content.search-global-typeahead__content .search-global-typeahead__hit-info .search-global-typeahead__hit-text';
 
 const _SEARCH_RECENT_MATCH =
   '.search-typeahead-v2__history-list-carousel > li .typeahead-suggestion--carousel-item-text';

@@ -7,7 +7,10 @@ namespace CandidatesChecker.Web.Check.Common
     {
         public static string RemoveDiacritics(this string s)
         {
-            if (string.IsNullOrWhiteSpace(s)) return s;
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                return s;
+            }
 
             string normalizedString = s.Normalize(NormalizationForm.FormD);
             var stringBuilder = new StringBuilder();
